@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Казка-квест: Пригоди маленького Динозаврика</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Nunito', 'Comic Sans MS', sans-serif;
+            background: linear-gradient(180deg, #f7b733 0%, #fc4a1a 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Декоративні елементи на фоні */
+        .decoration {
+            position: absolute;
+            font-size: 4rem;
+            opacity: 0.7;
+            animation: floatDeco 6s ease-in-out infinite alternate;
+            z-index: 1;
+        }
+        .dec-1 { top: 8%; left: 8%; animation-delay: 0s; }
+        .dec-2 { top: 12%; right: 10%; animation-delay: 2s; }
+        .dec-3 { bottom: 8%; left: 12%; animation-delay: 4s; }
+
+        @keyframes floatDeco {
+            from { transform: translateY(0) rotate(0deg); }
+            to { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        /* Головний контейнер квесту */
+        .quest-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 35px;
+            padding: 30px;
+            width: 92%;
+            max-width: 650px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 0 0 8px rgba(255, 255, 255, 0.5);
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        h1 {
+            color: #d90429;
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 0px #ffccd5;
+        }
+
+        /* Візуальна сцена (емодзі) */
+        .scene-image {
+            font-size: 7.5rem;
+            line-height: 1.2;
+            margin-bottom: 15px;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Текстова сцена */
+        .scene-text {
+            background: #fff0f3;
+            border: 3px solid #ffb3c6;
+            border-radius: 20px;
+            padding: 20px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #590d22;
+            min-height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+            line-height: 1.4;
+        }
+
+        /* Кнопки вибору дій */
+        .choices {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        @media (min-width: 500px) {
+            .choices {
+                flex-direction: row;
+            }
+        }
+
+        .choice-btn {
+            flex: 1;
+            background: #ff7043;
+            border: none;
+            border-radius: 20px;
+            padding: 16px 20px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 6px 0 #d84315;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-2px);
+            background: #ff5722;
+        }
+
+        .choice-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        .btn-restart {
+            background: #43a047;
+            box-shadow: 0 6px 0 #2e7d32;
+        }
+        .btn-restart:hover {
+            background: #4caf50;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="decoration dec-1">🌴</div>
+    <div class="decoration dec-2">🌋</div>
+    <div class="decoration dec-3">🌿</div>
+
+    <div class="quest-container">
+        <h1 id="questTitle">Пригоди Динозаврика</h1>
+        <div class="scene-image" id="sceneImage">🦖</div>
+        <div class="scene-text" id="sceneText">Завантаження казки...</div>
+        <div class="choices" id="choicesContainer">
+            <!-- Кнопки генеруються через JS -->
+        </div>
+    </div>
+
+    <script>
+        // Сюжетна структура квесту про динозаврів
+        const story = {
+            start: {
+                title: "Початок подорожі",
+                image: "🦖🌴",
+                text: "Маленький Динозаврик прокинувся у затишній зеленій долині. Сьогодні він вирішив вирушити у велику подорож до Світящого Озера, щоб знайти нових друзів.",
+                choices: [
+                    { text: "Пройти повз високий вулкан 🌋", next: "volcano" },
+                    { text: "Зазирнути у таємничу печеру 🕳️", next: "cave" }
+                ]
+            },
+            volcano: {
+                title: "Біля димлячого вулкана",
+                image: "🦖🌋",
+                text: "На стежці біля вулкана Динозаврик зустрів маленького Птеродактиля, який не міг злетіти через важкий камінчик у крильці. Йому потрібна допомога!",
+                choices: [
+                    { text: "Допомогти птеродактилю 🦅", next: "helpBird" },
+                    { text: "Обійти вулкан манівцями 🏃‍♂️", next: "bypassVolcano" }
+                ]
+            },
+            cave: {
+                title: "У темній печері",
+                image: "🦖🦇",
+                text: "У прохолодній печері мандрівник знайшов загублене яскраве дино-яйце, яке тихо поскрипувало від холоду. Воно потребує тепла.",
+                choices: [
+                    { text: "Зігріти яєчко своїм теплом 🥚", next: "warmEgg" },
+                    { text: "Покликати дорослих на допомогу 🗣️", next: "callAdults" }
+                ]
+            },
+            helpBird: {
+                title: "Вдячний крилатий друг",
+                image: "🦖🦅✨",
+                text: "Динозаврик обережно прибрав камінчик, і щасливий птеродактиль злетів у небо! У подяку він показав найбезпечнішу та найкоротшу дорогу до озера.",
+                choices: [
+                    { text: "Поспішити до озера (Фінал) 🌊", next: "endingFriends" }
+                ]
+            },
+            bypassVolcano: {
+                title: "Весела стежина",
+                image: "🦖🌿",
+                text: "Динозаврик швидко обійшов гарячий вулкан і опинився на чудовій галявині, де росли найсолодші доісторичні листочки та ягоди.",
+                choices: [
+                    { text: "Поділитися ласощами з іншими (Фінал) 🍃", next: "endingFriends" }
+                ]
